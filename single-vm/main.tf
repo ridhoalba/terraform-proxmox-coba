@@ -8,50 +8,49 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_api_url = var.proxmox_api_url
-  pm_api_token_id = var.proxmox_api_token_id
-  pm_api_token_secret = var.proxmox_api_token_secret
-  pm_tls_insecure = true
+    pm_api_url = var.proxmox_api_url
+    pm_api_token_id = var.proxmox_api_token_id
+    pm_api_token_secret = var.proxmox_api_token_secret
+    pm_tls_insecure = true
 }
 
 resource "proxmox_vm_qemu" "vm" {
-  vmid = 108
-  name = "demo-vm"
-  target_node = "albadriyano"
+    vmid = 110
+    name = "demo-vm"
+    target_node = "pve"
 
-  clone = "ubuntu-jammy"
-  full_clone = true
+    clone = "ubuntu-jammy"
+    full_clone = true
 
-  os_type = "cloud-init"
-  cloudinit_cdrom_storage = "local-lvm"
+    os_type = "cloud-init"
+    cloudinit_cdrom_storage = "local-lvm"
 
-  ciuser = var.ci_user
-  cipassword = var.ci_password
-  sshkeys = file(var.ci_ssh_public_key)
+    ciuser = var.ci_user
+    cipassword = var.ci_password
+    sshkeys = file(var.ci_ssh_public_key)
 
-  cores = 1
-  memory = 1024
-  agent = 1
+    cores = 1
+    memory = 1024
+    agent = 1
 
-  bootdisk = "scsi0"
-  scsihw = "virtio-scsi-pci"
-  ipconfig0 = "ip=dhcp"
+    bootdisk = "scsi0"
+    scsihw = "virtio-scsi-pci"
+    ipconfig0 = "ip=dhcp"
 
-  disk {
-    size = "10G"
-    type = "scsi"
-    storage = "local-lvm"
-  }
+    disk {
+      size = "10G"
+      type = "scsi"
+      storage = "local-lvm"
+    }
 
-  network {
-    model = "virtio"
-    bridge = "vmbr1"
-    tag = "103"
-  }
+    network {
+      model = "virtio"
+      bridge = "vmbr0"
+    }
 
-  lifecycle {
-    ignore_changes = [ 
+    lifecycle {
+      ignore_changes = [ 
         network
-     ]
-  }
+       ]
+    }
 }
